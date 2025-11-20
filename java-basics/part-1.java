@@ -11,13 +11,14 @@ class Solution {
         System.out.println("Re-enter the username for confirmation: ");
         confirmation=sc.nextLine();
 
-        int len_username=username.length();
-        int len_confirmation=confirmation.length();
+        int lenUsername=username.length();
+        int lenConfirmation=confirmation.length();
 
-        System.out.println("Length 1: "+len_username);
-        System.out.println("Length 2: "+len_confirmation);
+        System.out.println("Length 1: "+lenUsername);
+        System.out.println("Length 2: "+lenConfirmation);
 
-        System.out.println("Lengths match: "+(len_username==len_confirmation));
+        System.out.println("Lengths match: "+(lenUsername==lenConfirmation));
         System.out.println("Strings match: "+username.equals(confirmation));
+        sc.close();
     }
 }

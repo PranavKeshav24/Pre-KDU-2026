@@ -1,4 +1,8 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
 
 class Solution {
     public static void main(String args[]) {
@@ -27,27 +31,28 @@ class Solution {
         System.out.println();
         
         System.out.print("HashSet: [");
-        int hsCount = 0;
-        int hsSize = hash_strs.size();
-        for (String s : hash_strs) {
+        int hsCount=0;
+        int hsSize=hash_strs.size();
+        for (String s: hash_strs) {
             hsCount++;
-            if (hsCount == hsSize)
-                System.out.print(s + "]");
+            if (hsCount==hsSize)
+                System.out.print(s+"]");
             else
-                System.out.print(s + ", ");
+                System.out.print(s+", ");
         }
         System.out.println();
 
         System.out.print("HashMap: {");
-        int hmCount = 0;
-        int hmSize = str_freq.size();
-        for (Map.Entry<String, Integer> entry : str_freq.entrySet()) {
+        int hmCount=0;
+        int hmSize=str_freq.size();
+        for (Map.Entry<String, Integer> entry: str_freq.entrySet()) {
             hmCount++;
-            if (hmCount == hmSize)
-                System.out.print(entry.getKey() + "=" + entry.getValue() + "}");
+            if (hmCount==hmSize)
+                System.out.print(entry.getKey()+"="+entry.getValue()+"}");
             else
-                System.out.print(entry.getKey() + "=" + entry.getValue() + ", ");
+                System.out.print(entry.getKey()+"="+entry.getValue()+", ");
         }
         System.out.println();
+        sc.close();
     }
 }
