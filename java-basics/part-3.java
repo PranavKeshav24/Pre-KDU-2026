@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 class Solution {
     public static void main(String[] args) throws java.io.FileNotFoundException {
