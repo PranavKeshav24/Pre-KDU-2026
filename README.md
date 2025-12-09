@@ -32,7 +32,7 @@
 
 4. Query 1: Basic JOIN - Show All Content with Categories
 
-`SELECT co.content_id, co.title, ca.category_name FROM category ca LEFT JOIN content co ON ca.category_id=co.category_id ORDER BY co.content_id ASC;`
+`SELECT CO.content_id, CO.title, CA.category_name FROM CONTENT CO INNER JOIN CATEGORY CA ON CA.category_id=CO.category_id ORDER BY CO.content_id ASC;`
 
 <img width="930" height="371" alt="image" src="https://github.com/user-attachments/assets/301797ea-f38f-4a33-b5ee-ecc7417fcecf" />
 
@@ -53,7 +53,7 @@
 
 8. Query 5: Index Demonstration
 
-`EXAPLAIN ANALYZE` on Query 1
+`EXPLAIN ANALYZE` on Query 1
 <img width="1889" height="597" alt="image" src="https://github.com/user-attachments/assets/8534631e-5f28-42eb-85a5-2f093514bf9d" />
 
 `CREATE INDEX idx_category_id ON content(category_id);`
@@ -63,28 +63,33 @@
 <img width="1870" height="589" alt="image" src="https://github.com/user-attachments/assets/ccd8cb22-818d-432f-90c8-ffc989649ef6" />
 
 Q: Why did the index improve performance?
-Creation of an index `idx_category_id` on `category_id` averts a full table scan for finding a particular category by it's category_id instead, indexing helps to locate relavant records without going though the entire table for it. The new index sped up the inner lookup of content rows, so each nested probe is now faster.
+Creation of an index `idx_category_id` on `category_id` averts a full table scan. Instead, indexing helps to locate relevant records directly without going through the entire table. This speeds up the join by accelerating the lookup of content rows for each category, making each nested probe faster.
 
 ## Concept Check - "The 3 Why's"
+
 ### Why #1: Why do we use Foreign Keys?
+
 The use of foreign keys help us enforce referential integrity that is , they make sure that every record (for example in content) actually points to a valid, existing record (as in category table).
 
-So, if we tried to insert a content record with category_id = 999 when no such category exists, MySQL would reject the insert with a foreign key error. 
+So, if we tried to insert a content record with category_id = 999 when no such category exists, MySQL would reject the insert with a foreign key error.
 
 ### Why #2: Why is ACID important for this database?
-ACID is important because it guarantees that all the simultaneous updates that happen to the data happen correctly, safely and predictably even with heavy load. 
+
+ACID is important because it guarantees that all the simultaneous updates that happen to the data happen correctly, safely and predictably even with heavy load.
 
 Without ACID, it would cause:
+
 1. Lost Update Problem - Lack of Isolation: Two users could update the same old view count, increment it separately and overwrite the other's result.
    Old count=10.
    User 1 reads 10, writes 11
    User 2 reads 10, writes 11
    One Update is lost in the process.
 2. Corrupted Writes - Lack of Atomicity: Let's say we are updating a view count we will first read the old count, then calculate the new count and then write it, and if the system crashes in the middle then the system might be left in corrupted state.
-3. Inconsistency of Data - Lack of Consistency: If a transaction is trying to set the view_in_millions count to a negative number, without durability such updates can violate the rules of the database. Consistency enforces all constraints and keeps the data valid at all times. 
-4. Damage to Data if system crashes - Lack of Durability: If the server crashes right after writing an updated view count, without durability this update can disapper.
+3. Inconsistency of Data - Lack of Consistency: If a transaction is trying to set the view_in_millions count to a negative number, without durability such updates can violate the rules of the database. The consistency property ensures that any transaction violating the database's rules like `CHECK` constraints is rolled back, keeping the data valid at all times.
+4. Damage to Data if system crashes - Lack of Durability: If the server crashes right after writing an updated view count, without durability this update can disappear.
 
 ### Why #3: Why would we create an index on category_id?
-Without an index on category_id, we need to scan every row to find a match which leads to huge load times for the streamflix app which runs hundreds of queries filtering by category, each query requiring a scan through ALL records. 
+
+Without an index on category_id, we need to scan every row to find a match which leads to huge load times for the streamflix app which runs hundreds of queries filtering by category, each query requiring a scan through ALL records.
 
 With an index on category_id, the database used a sorted lookup like a book index to perform the search which helps it to find the matching records directly without having to scan through all records thus leading to faster page load of the streamflix app.
