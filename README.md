@@ -83,6 +83,17 @@ A materialized view stores the results of a query as a physical table. Unlike a 
 <img width="1897" height="54" alt="image" src="https://github.com/user-attachments/assets/3ce0f2c4-67d4-47fa-a883-05e7358ac478" />
 
 We can then write an automated refresh to update the details periosically.
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT refresh_category_avg_rating
+ON SCHEDULE EVERY 5 MINUTE DO
+BEGIN
+  TRUNCATE TABLE category_avg_rating;
+  INSERT INTO category_avg_rating(category_id, avg_rating, num_contents, last_update)
+  SELECT category_id, AVG(rating), COUNT(*), MAX(updated_at)
+  FROM content
+  GROUP BY category_id;
+END;
 
 Q: Why did the index improve performance?
 Creation of an index `idx_category_id` on `category_id` averts a full table scan. Instead, indexing helps to locate relevant records directly without going through the entire table. This speeds up the join by accelerating the lookup of content rows for each category, making each nested probe faster.
