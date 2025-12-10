@@ -62,6 +62,28 @@
 `EXPLAIN ANALYZE` on Query 1 (after creation of index on `category_id`)
 <img width="1870" height="589" alt="image" src="https://github.com/user-attachments/assets/ccd8cb22-818d-432f-90c8-ffc989649ef6" />
 
+### Composite Index on category_id, views_in_millions
+Consider the query:
+`SELECT title, views_in_millions FROM content WHERE category_id = 2 ORDER BY views_in_millions DESC LIMIT 5;`
+This is one of the possible common queries in a streaming app wherein wew intend to find a particular category and sort the records associated with that id by the popularity using views_in_millions.
+
+`EXPLAIN ANALYZE SELECT title, views_in_millions FROM content WHERE category_id = 2 ORDER BY views_in_millions DESC LIMIT 5;`
+<img width="1899" height="424" alt="image" src="https://github.com/user-attachments/assets/8ba53b1d-7572-47ac-ba89-15913c42747d" />
+
+`CREATE INDEX idx_cat_views ON content(category_id, view_count DESC);`
+<img width="1897" height="80" alt="image" src="https://github.com/user-attachments/assets/d336a74a-de9d-4bd2-b3f5-80c277b1259a" />
+
+`EXPLAIN ANALYZE SELECT title, views_in_millions FROM content WHERE category_id = 2 ORDER BY views_in_millions DESC LIMIT 5;`
+<img width="1891" height="357" alt="image" src="https://github.com/user-attachments/assets/2e9fe0a0-0f7b-4985-9e7f-32ad95913c0e" />
+
+9. Materialized View for Dashboards in Streamflix
+A materialized view stores the results of a query as a physical table. Unlike a normal view which runs the query each time, a materialized view returns precomputed results which makes it fast. We have to refresh it to update the stored results when source data changes.
+
+`CREATE TABLE category_avg_rating (category_id INT PRIMARY KEY, avg_rating DECIMAL(4,2), num_contents BIGINT, last_update TIMESTAMP);`
+<img width="1897" height="54" alt="image" src="https://github.com/user-attachments/assets/3ce0f2c4-67d4-47fa-a883-05e7358ac478" />
+
+We can then write an automated refresh to update the details periosically.
+
 Q: Why did the index improve performance?
 Creation of an index `idx_category_id` on `category_id` averts a full table scan. Instead, indexing helps to locate relevant records directly without going through the entire table. This speeds up the join by accelerating the lookup of content rows for each category, making each nested probe faster.
 
