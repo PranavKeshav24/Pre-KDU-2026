@@ -63,6 +63,7 @@
 <img width="1870" height="589" alt="image" src="https://github.com/user-attachments/assets/ccd8cb22-818d-432f-90c8-ffc989649ef6" />
 
 ### Composite Index on category_id, views_in_millions
+
 Consider the query:
 `SELECT title, views_in_millions FROM content WHERE category_id = 2 ORDER BY views_in_millions DESC LIMIT 5;`
 This is one of the possible common queries in a streaming app wherein wew intend to find a particular category and sort the records associated with that id by the popularity using views_in_millions.
@@ -77,7 +78,7 @@ This is one of the possible common queries in a streaming app wherein wew intend
 <img width="1891" height="357" alt="image" src="https://github.com/user-attachments/assets/2e9fe0a0-0f7b-4985-9e7f-32ad95913c0e" />
 
 9. Materialized View for Dashboards in Streamflix
-A materialized view stores the results of a query as a physical table. Unlike a normal view which runs the query each time, a materialized view returns precomputed results which makes it fast. We have to refresh it to update the stored results when source data changes.
+   A materialized view stores the results of a query as a physical table. Unlike a normal view which runs the query each time, a materialized view returns precomputed results which makes it fast. We have to refresh it to update the stored results when source data changes.
 
 `CREATE TABLE category_avg_rating (category_id INT PRIMARY KEY, avg_rating DECIMAL(4,2), num_contents BIGINT, last_update TIMESTAMP);`
 <img width="1897" height="54" alt="image" src="https://github.com/user-attachments/assets/3ce0f2c4-67d4-47fa-a883-05e7358ac478" />
@@ -88,11 +89,11 @@ SET GLOBAL event_scheduler = ON;
 CREATE EVENT refresh_category_avg_rating
 ON SCHEDULE EVERY 5 MINUTE DO
 BEGIN
-  TRUNCATE TABLE category_avg_rating;
-  INSERT INTO category_avg_rating(category_id, avg_rating, num_contents, last_update)
-  SELECT category_id, AVG(rating), COUNT(*), MAX(updated_at)
-  FROM content
-  GROUP BY category_id;
+TRUNCATE TABLE category_avg_rating;
+INSERT INTO category_avg_rating(category_id, avg_rating, num_contents, last_update)
+SELECT category_id, AVG(rating), COUNT(\*), MAX(updated_at)
+FROM content
+GROUP BY category_id;
 END;
 
 Q: Why did the index improve performance?
@@ -126,3 +127,36 @@ Without ACID, it would cause:
 Without an index on category_id, we need to scan every row to find a match which leads to huge load times for the streamflix app which runs hundreds of queries filtering by category, each query requiring a scan through ALL records.
 
 With an index on category_id, the database used a sorted lookup like a book index to perform the search which helps it to find the matching records directly without having to scan through all records thus leading to faster page load of the streamflix app.
+
+### Live Coding on 10-12-2025
+
+Q:
+Create a new table called user_watchlist with columns:
+
+user_id (integer)
+content_id (integer, foreign key to content)
+added_date (date)
+
+Insert 3 rows linking users to content. Show your table structure and data.
+
+Write a query that shows: user_id, content title, and category name for all watchlist items
+
+You need to speed up queries that search for content by release_year.
+
+Create an index.
+Show me the CREATE INDEX command you used.
+Run EXPLAIN ANALYZE on a query filtering by release_year.
+
+Solution:
+CREATE TABLE user_watchlist(user_id INTEGER NOT NULL, content_id INTEGER NOT NULL, added_date DATE, FOREIGN KEY (content_id) REFERENCES content(content_id));
+
+INSERT INTO user_watchlist(user_id, content_id, added_date) VALUES (101, 1, '2025-01-02'), (102, 3, '2025-01-05'), (101, 5, '2025-01-10');
+
+DESC user_watchlist;
+SELECT \* FROM user_watchlist;
+
+SELECT UW.user_id, C.title AS content_title, CA.category_name FROM user_watchlist UW JOIN CONTENT C ON UW.content_id=C.content_id JOIN CATEGORY CA ON C.category_id=CA.category_id ORDER BY UW.user_id;
+
+CREATE INDEX idx_year ON content(release_year);
+
+EXPLAIN ANALYZE SELECT content_id, title, rating FROM CONTENT WHERE release_year=2024;
