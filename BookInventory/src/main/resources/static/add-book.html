@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add/Edit Book</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --success: #10b981;
+        --success-bg: #d1fae5;
+        --danger: #ef4444;
+        --danger-bg: #fee2e2;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+        min-height: 100vh;
+        color: var(--gray-800);
+        line-height: 1.6;
+        padding: 40px 24px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--gray-600);
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 24px;
+        transition: color 0.15s ease;
+      }
+
+      .back-link:hover {
+        color: var(--primary);
+      }
+
+      .card {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        border: 1px solid var(--gray-200);
+      }
+
+      .card-header {
+        padding: 24px 32px;
+        border-bottom: 1px solid var(--gray-100);
+        background: var(--gray-50);
+      }
+
+      .card-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .card-body {
+        padding: 32px;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      label {
+        display: block;
+        font-weight: 500;
+        color: var(--gray-700);
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+      }
+
+      label .required {
+        color: var(--danger);
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-sm);
+        font-size: 1rem;
+        font-family: inherit;
+        color: var(--gray-800);
+        background: white;
+        transition: all 0.15s ease;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      input::placeholder {
+        color: var(--gray-400);
+      }
+
+      select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 20px;
+        padding-right: 44px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 28px;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        transition: all 0.15s ease;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        width: 100%;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .result {
+        margin-top: 24px;
+        padding: 16px 20px;
+        border-radius: var(--radius-sm);
+        display: none;
+      }
+
+      .result.success {
+        display: block;
+        background: var(--success-bg);
+        border: 1px solid var(--success);
+        color: #065f46;
+      }
+
+      .result.error {
+        display: block;
+        background: var(--danger-bg);
+        border: 1px solid var(--danger);
+        color: #991b1b;
+      }
+
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .result-details {
+        font-family: "SF Mono", Monaco, monospace;
+        font-size: 0.85rem;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 12px;
+        border-radius: 6px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 24px 16px;
+        }
+
+        .card-body {
+          padding: 24px;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Book List</a>
+
+      <div class="card">
+        <div class="card-header">
+          <h1 id="formTitle">✨ Add New Book</h1>
+        </div>
+        <div class="card-body">
+          <form id="bookForm">
+            <input type="hidden" id="bookId" />
+
+            <div class="form-group">
+              <label>Title <span class="required">*</span></label>
+              <input name="title" placeholder="Enter book title" required />
+            </div>
+
+            <div class="form-group">
+              <label>Author <span class="required">*</span></label>
+              <input name="author" placeholder="Enter author name" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>ISBN</label>
+                <input name="isbn" placeholder="e.g., 978-0132350884" />
+              </div>
+              <div class="form-group">
+                <label>Published Year</label>
+                <input
+                  name="publishedYear"
+                  type="number"
+                  placeholder="e.g., 2024"
+                  min="1000"
+                  max="2099"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Publisher <span class="required">*</span></label>
+              <input
+                name="publisher"
+                placeholder="Enter publisher name"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Price <span class="required">*</span></label>
+                <input
+                  name="price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="e.g., 29.99"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select name="category">
+                  <option value="">Select a category</option>
+                  <option value="FICTION">Fiction</option>
+                  <option value="NON_FICTION">Non-Fiction</option>
+                  <option value="SCIENCE">Science</option>
+                  <option value="TECHNOLOGY">Technology</option>
+                  <option value="HISTORY">History</option>
+                  <option value="BIOGRAPHY">Biography</option>
+                  <option value="CHILDREN">Children</option>
+                  <option value="SELF_HELP">Self-Help</option>
+                  <option value="BUSINESS">Business</option>
+                  <option value="EDUCATION">Education</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <span>Add Book</span>
+            </button>
+          </form>
+
+          <div id="result" class="result"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get("id");
+
+      if (editId) {
+        document.getElementById("formTitle").innerHTML = "📝 Edit Book";
+        document.getElementById("submitBtn").innerHTML =
+          "<span>Update Book</span>";
+        document.getElementById("bookId").value = editId;
+
+        fetch(`/api/books/${editId}`)
+          .then((res) => res.json())
+          .then((book) => {
+            const form = document.getElementById("bookForm");
+            form.title.value = book.title || "";
+            form.author.value = book.author || "";
+            form.isbn.value = book.isbn || "";
+            form.publisher.value = book.publisher || "";
+            form.price.value = book.price || "";
+            form.publishedYear.value = book.publishedYear || "";
+            form.category.value = book.category || "";
+          })
+          .catch((err) => {
+            showResult(false, `Error loading book: ${err.message}`);
+          });
+      }
+
+      function showResult(success, message, details = null) {
+        const resultEl = document.getElementById("result");
+        resultEl.className = `result ${success ? "success" : "error"}`;
+        resultEl.innerHTML = `
+          <div class="result-title">
+            ${success ? "✅" : "❌"} ${message}
+          </div>
+          ${details ? `<div class="result-details">${details}</div>` : ""}
+        `;
+      }
+
+      document
+        .getElementById("bookForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const bookId = document.getElementById("bookId").value;
+          const isEdit = !!bookId;
+
+          const payload = {
+            title: form.title.value,
+            author: form.author.value,
+            isbn: form.isbn.value || null,
+            publisher: form.publisher.value,
+            price: parseFloat(form.price.value),
+            publishedYear: form.publishedYear.value
+              ? parseInt(form.publishedYear.value)
+              : null,
+            category: form.category.value || null,
+          };
+
+          try {
+            const url = isEdit ? `/api/books/${bookId}` : "/api/books";
+            const method = isEdit ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+              method: method,
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const body = await res.json();
+
+            if (res.ok) {
+              showResult(
+                true,
+                isEdit
+                  ? "Book updated successfully!"
+                  : "Book added successfully!",
+                JSON.stringify(body, null, 2)
+              );
+              if (!isEdit) {
+                form.reset();
+              }
+            } else {
+              showResult(
+                false,
+                body.message || "An error occurred",
+                JSON.stringify(body, null, 2)
+              );
+            }
+          } catch (err) {
+            showResult(false, err.message);
+          }
+        });
+    </script>
+  </body>
+</html>
