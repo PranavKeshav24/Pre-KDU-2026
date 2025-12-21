@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Inventory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --success: #10b981;
+        --success-hover: #059669;
+        --danger: #ef4444;
+        --danger-hover: #dc2626;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+        min-height: 100vh;
+        color: var(--gray-800);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 40px 24px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 8px;
+        letter-spacing: -0.025em;
+      }
+
+      .subtitle {
+        color: var(--gray-500);
+        font-size: 1.1rem;
+      }
+
+      .nav-cards {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        margin-bottom: 48px;
+        flex-wrap: wrap;
+      }
+
+      .nav-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 24px;
+        background: white;
+        border-radius: var(--radius);
+        text-decoration: none;
+        color: var(--gray-700);
+        font-weight: 500;
+        box-shadow: var(--shadow);
+        transition: all 0.2s ease;
+        border: 1px solid var(--gray-200);
+      }
+
+      .nav-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .nav-card .icon {
+        font-size: 1.5rem;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--gray-800);
+      }
+
+      .book-count {
+        background: var(--primary);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .card {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid var(--gray-200);
+      }
+
+      .loading {
+        padding: 60px;
+        text-align: center;
+        color: var(--gray-500);
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--gray-200);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 16px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: var(--gray-50);
+        padding: 14px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--gray-600);
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      td {
+        padding: 16px;
+        border-bottom: 1px solid var(--gray-100);
+        font-size: 0.925rem;
+      }
+
+      tbody tr {
+        transition: background-color 0.15s ease;
+      }
+
+      tbody tr:hover {
+        background-color: var(--gray-50);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .book-title {
+        font-weight: 600;
+        color: var(--gray-900);
+      }
+
+      .book-author {
+        color: var(--gray-500);
+        font-size: 0.85rem;
+        margin-top: 2px;
+      }
+
+      .isbn {
+        font-family: "SF Mono", Monaco, monospace;
+        font-size: 0.85rem;
+        color: var(--gray-600);
+        background: var(--gray-100);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+
+      .price {
+        font-weight: 600;
+        color: var(--success);
+      }
+
+      .category-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background: var(--gray-100);
+        color: var(--gray-700);
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: capitalize;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-edit {
+        background: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      .btn-edit:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      .btn-delete {
+        background: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      .btn-delete:hover {
+        background: var(--danger);
+        color: white;
+      }
+
+      .empty-state {
+        padding: 80px 40px;
+        text-align: center;
+      }
+
+      .empty-state .icon {
+        font-size: 4rem;
+        margin-bottom: 16px;
+      }
+
+      .empty-state h3 {
+        font-size: 1.25rem;
+        color: var(--gray-700);
+        margin-bottom: 8px;
+      }
+
+      .empty-state p {
+        color: var(--gray-500);
+        margin-bottom: 24px;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        padding: 12px 24px;
+        font-size: 1rem;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+
+      /* Filter Styles */
+      .filters {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--gray-200);
+        padding: 20px 24px;
+        margin-bottom: 24px;
+      }
+
+      .filters-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .filters-title {
+        font-weight: 600;
+        color: var(--gray-700);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .clear-filters {
+        background: none;
+        border: none;
+        color: var(--primary);
+        font-size: 0.875rem;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .clear-filters:hover {
+        text-decoration: underline;
+      }
+
+      .filters-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 16px;
+        align-items: end;
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .filter-group label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--gray-500);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .filter-group input,
+      .filter-group select {
+        padding: 10px 14px;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-family: inherit;
+        color: var(--gray-800);
+        background: white;
+        transition: all 0.15s ease;
+      }
+
+      .filter-group input:focus,
+      .filter-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .filter-group input::placeholder {
+        color: var(--gray-400);
+      }
+
+      .filter-group select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 18px;
+        padding-right: 36px;
+      }
+
+      .price-range {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .price-range input {
+        width: 100%;
+      }
+
+      .price-range span {
+        color: var(--gray-400);
+        font-size: 0.875rem;
+      }
+
+      .active-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--gray-100);
+      }
+
+      .active-filters:empty {
+        display: none;
+      }
+
+      .filter-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: var(--primary);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .filter-tag button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+        opacity: 0.8;
+      }
+
+      .filter-tag button:hover {
+        opacity: 1;
+      }
+
+      .no-results {
+        padding: 60px 40px;
+        text-align: center;
+        color: var(--gray-500);
+      }
+
+      .no-results .icon {
+        font-size: 3rem;
+        margin-bottom: 12px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 24px 16px;
+        }
+
+        h1 {
+          font-size: 1.75rem;
+        }
+
+        .nav-cards {
+          flex-direction: column;
+        }
+
+        .card {
+          overflow-x: auto;
+        }
+
+        table {
+          min-width: 800px;
+        }
+
+        .filters-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>📚 Book Inventory</h1>
+        <p class="subtitle">Manage your book collection with ease</p>
+      </header>
+
+      <nav class="nav-cards">
+        <a href="/add-book.html" class="nav-card">
+          <span class="icon">➕</span>
+          <span>Add New Book</span>
+        </a>
+        <a href="/view-book.html" class="nav-card">
+          <span class="icon">🔍</span>
+          <span>Find Book by ID</span>
+        </a>
+      </nav>
+
+      <!-- Filters Section -->
+      <div class="filters">
+        <div class="filters-header">
+          <span class="filters-title">🔍 Filter Books</span>
+          <button class="clear-filters" onclick="clearFilters()">
+            Clear all
+          </button>
+        </div>
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label>Search</label>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search by title or author..."
+              oninput="applyFilters()"
+            />
+          </div>
+          <div class="filter-group">
+            <label>Category</label>
+            <select id="categoryFilter" onchange="applyFilters()">
+              <option value="">All Categories</option>
+              <option value="FICTION">Fiction</option>
+              <option value="NON_FICTION">Non-Fiction</option>
+              <option value="SCIENCE">Science</option>
+              <option value="TECHNOLOGY">Technology</option>
+              <option value="HISTORY">History</option>
+              <option value="BIOGRAPHY">Biography</option>
+              <option value="CHILDREN">Children</option>
+              <option value="SELF_HELP">Self-Help</option>
+              <option value="BUSINESS">Business</option>
+              <option value="EDUCATION">Education</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Min Price</label>
+            <input
+              type="number"
+              id="minPrice"
+              placeholder="$0"
+              min="0"
+              step="0.01"
+              oninput="applyFilters()"
+            />
+          </div>
+          <div class="filter-group">
+            <label>Max Price</label>
+            <input
+              type="number"
+              id="maxPrice"
+              placeholder="Any"
+              min="0"
+              step="0.01"
+              oninput="applyFilters()"
+            />
+          </div>
+        </div>
+        <div class="active-filters" id="activeFilters"></div>
+      </div>
+
+      <div class="section-header">
+        <h2>All Books</h2>
+        <span class="book-count" id="bookCount">0 books</span>
+      </div>
+
+      <div class="card">
+        <div id="loading" class="loading">
+          <div class="loading-spinner"></div>
+          <p>Loading books...</p>
+        </div>
+        <table id="booksTable" style="display: none">
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>ISBN</th>
+              <th>Publisher</th>
+              <th>Year</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="booksBody"></tbody>
+        </table>
+        <div id="noBooks" class="empty-state" style="display: none">
+          <div class="icon">📖</div>
+          <h3>No books yet</h3>
+          <p>Start building your collection by adding your first book.</p>
+          <a href="/add-book.html" class="btn btn-primary"
+            >Add Your First Book</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let allBooks = [];
+
+      async function loadBooks() {
+        try {
+          const res = await fetch("/api/books");
+          allBooks = await res.json();
+          document.getElementById("loading").style.display = "none";
+
+          if (allBooks.length === 0) {
+            document.getElementById("noBooks").style.display = "block";
+            return;
+          }
+
+          renderBooks(allBooks);
+        } catch (err) {
+          document.getElementById(
+            "loading"
+          ).innerHTML = `<p style="color: var(--danger)">Error loading books: ${err.message}</p>`;
+        }
+      }
+
+      function renderBooks(books) {
+        const tbody = document.getElementById("booksBody");
+        const table = document.getElementById("booksTable");
+        const noBooks = document.getElementById("noBooks");
+
+        if (books.length === 0) {
+          table.style.display = "none";
+          noBooks.style.display = "none";
+
+          // Show no results message
+          let noResults = document.getElementById("noResults");
+          if (!noResults) {
+            noResults = document.createElement("div");
+            noResults.id = "noResults";
+            noResults.className = "no-results";
+            noResults.innerHTML = `
+              <div class="icon">🔍</div>
+              <h3>No books match your filters</h3>
+              <p>Try adjusting your search criteria</p>
+            `;
+            document.querySelector(".card").appendChild(noResults);
+          }
+          noResults.style.display = "block";
+          document.getElementById("bookCount").textContent = "0 books";
+          return;
+        }
+
+        // Hide no results message if exists
+        const noResults = document.getElementById("noResults");
+        if (noResults) noResults.style.display = "none";
+        noBooks.style.display = "none";
+
+        document.getElementById("bookCount").textContent = `${
+          books.length
+        } book${books.length !== 1 ? "s" : ""}`;
+
+        tbody.innerHTML = "";
+        books.forEach((book) => {
+          const tr = document.createElement("tr");
+          const categoryDisplay = book.category
+            ? book.category.replace("_", " ").toLowerCase()
+            : "N/A";
+          tr.innerHTML = `
+                  <td>
+                    <div class="book-title">${book.title || ""}</div>
+                    <div class="book-author">by ${
+                      book.author || "Unknown"
+                    }</div>
+                  </td>
+                  <td>${
+                    book.isbn
+                      ? `<span class="isbn">${book.isbn}</span>`
+                      : '<span style="color: var(--gray-400)">—</span>'
+                  }</td>
+                  <td>${book.publisher || "—"}</td>
+                  <td>${book.publishedYear || "—"}</td>
+                  <td><span class="category-badge">${categoryDisplay}</span></td>
+                  <td><span class="price">$${
+                    book.price ? book.price.toFixed(2) : "0.00"
+                  }</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="btn btn-edit" onclick="editBook(${
+                        book.id
+                      })">Edit</button>
+                      <button class="btn btn-delete" onclick="deleteBook(${
+                        book.id
+                      })">Delete</button>
+                    </div>
+                  </td>
+              `;
+          tbody.appendChild(tr);
+        });
+        table.style.display = "table";
+      }
+
+      function applyFilters() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase()
+          .trim();
+        const category = document.getElementById("categoryFilter").value;
+        const minPrice =
+          parseFloat(document.getElementById("minPrice").value) || 0;
+        const maxPrice =
+          parseFloat(document.getElementById("maxPrice").value) || Infinity;
+
+        const filtered = allBooks.filter((book) => {
+          // Search filter (title or author)
+          const matchesSearch =
+            !searchTerm ||
+            (book.title && book.title.toLowerCase().includes(searchTerm)) ||
+            (book.author && book.author.toLowerCase().includes(searchTerm));
+
+          // Category filter
+          const matchesCategory = !category || book.category === category;
+
+          // Price filter
+          const price = book.price || 0;
+          const matchesPrice = price >= minPrice && price <= maxPrice;
+
+          return matchesSearch && matchesCategory && matchesPrice;
+        });
+
+        renderBooks(filtered);
+        updateActiveFilters();
+      }
+
+      function updateActiveFilters() {
+        const container = document.getElementById("activeFilters");
+        const tags = [];
+
+        const searchTerm = document.getElementById("searchInput").value.trim();
+        const category = document.getElementById("categoryFilter").value;
+        const minPrice = document.getElementById("minPrice").value;
+        const maxPrice = document.getElementById("maxPrice").value;
+
+        if (searchTerm) {
+          tags.push(
+            `<span class="filter-tag">Search: "${searchTerm}" <button onclick="clearFilter('search')">×</button></span>`
+          );
+        }
+        if (category) {
+          const categoryDisplay = category.replace("_", " ").toLowerCase();
+          tags.push(
+            `<span class="filter-tag">Category: ${categoryDisplay} <button onclick="clearFilter('category')">×</button></span>`
+          );
+        }
+        if (minPrice) {
+          tags.push(
+            `<span class="filter-tag">Min: $${minPrice} <button onclick="clearFilter('minPrice')">×</button></span>`
+          );
+        }
+        if (maxPrice) {
+          tags.push(
+            `<span class="filter-tag">Max: $${maxPrice} <button onclick="clearFilter('maxPrice')">×</button></span>`
+          );
+        }
+
+        container.innerHTML = tags.join("");
+      }
+
+      function clearFilter(type) {
+        switch (type) {
+          case "search":
+            document.getElementById("searchInput").value = "";
+            break;
+          case "category":
+            document.getElementById("categoryFilter").value = "";
+            break;
+          case "minPrice":
+            document.getElementById("minPrice").value = "";
+            break;
+          case "maxPrice":
+            document.getElementById("maxPrice").value = "";
+            break;
+        }
+        applyFilters();
+      }
+
+      function clearFilters() {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("categoryFilter").value = "";
+        document.getElementById("minPrice").value = "";
+        document.getElementById("maxPrice").value = "";
+        applyFilters();
+      }
+
+      function editBook(id) {
+        window.location.href = `/add-book.html?id=${id}`;
+      }
+
+      async function deleteBook(id) {
+        if (!confirm("Are you sure you want to delete this book?")) return;
+
+        try {
+          const res = await fetch(`/api/books/${id}`, { method: "DELETE" });
+          if (res.ok) {
+            loadBooks();
+          } else {
+            const error = await res.json();
+            alert("Error deleting book: " + (error.message || "Unknown error"));
+          }
+        } catch (err) {
+          alert("Error deleting book: " + err.message);
+        }
+      }
+
+      loadBooks();
+    </script>
+  </body>
+</html>
