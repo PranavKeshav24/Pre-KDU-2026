@@ -112,8 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setBtn.addEventListener("click", () => {
     const minutes = Number(minutesInput.value);
-    if (!Number.isFinite(minutes) || minutes < 1 || minutes > 180) {
-      alert("Please enter minutes between 1 and 180");
+    if (!Number.isFinite(minutes) || minutes < 1 || minutes > 60) {
+      alert("Please enter minutes between 1 and 60");
       return;
     }
     defaultMinutes = Math.round(minutes);
