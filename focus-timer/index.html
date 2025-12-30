@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Focus Timer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="grid">
+        <main class="card" aria-live="polite">
+          <header>
+            <div class="left-head">
+              <div class="focus-icon" aria-hidden="true" title="Focus timer">
+                ⏱️
+              </div>
+              <div>
+                <h1>Focus Timer</h1>
+                <p class="muted">
+                  Smart sessions, AI tips, and progress tracking.
+                </p>
+              </div>
+            </div>
+
+            <div class="right-head">
+              <button
+                id="themeToggle"
+                class="theme-toggle"
+                aria-pressed="false"
+                aria-label="Toggle color theme"
+              ></button>
+            </div>
+          </header>
+
+          <div class="timer-display" id="display" aria-live="polite">25:00</div>
+
+          <div class="progress-wrap" aria-hidden="true">
+            <div class="progress" id="progressBar"></div>
+          </div>
+
+          <div class="controls">
+            <button id="startBtn" class="btn primary">Start / Resume</button>
+            <button id="pauseBtn" class="btn ghost">Pause</button>
+            <button id="resetBtn" class="btn warn">Reset</button>
+          </div>
+
+          <div class="set-row">
+            <input
+              id="minutesInput"
+              type="number"
+              min="1"
+              max="60"
+              value="25"
+              aria-label="Minutes"
+            />
+            <button id="setBtn" class="btn primary">Set Timer</button>
+            <div class="muted small-note">
+              Session types: 25/5 typical • 50/10 long
+            </div>
+          </div>
+
+          <div class="meta">
+            <div class="sessions" aria-live="polite">
+              <div class="muted">🎯 Sessions Completed</div>
+              <div id="sessionsCount" class="count">0</div>
+              <div class="muted small-note">
+                Total Focused: <span id="totalMinutes">0</span> min
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="panel">
+          <div class="card">
+            <h3 style="margin: 0 0 6px 0">AI Productivity Hub</h3>
+            <div class="muted small-note">
+              Paste your OpenRouter API key below (recommended: use a server
+              proxy in production).
+            </div>
+
+            <div class="api-row">
+              <input
+                id="apiKeyInput"
+                placeholder="sk-..."
+                aria-label="OpenRouter API key"
+              />
+              <button id="saveKeyBtn" class="btn ghost">Save</button>
+            </div>
+
+            <div style="margin-top: 12px" class="ai-area">
+              <label for="notes" class="muted"
+                >Quick notes / task for AI (optional)</label
+              >
+              <textarea
+                id="notes"
+                placeholder="What did you work on? Any distractions?"
+              ></textarea>
+
+              <div class="chips" role="list">
+                <button
+                  class="chip"
+                  data-prompt="Give me a 3-line focus tip for a 25 minute Pomodoro session"
+                >
+                  3-line Focus Tip
+                </button>
+                <button
+                  class="chip"
+                  data-prompt="Suggest 3 micro-tasks I can finish in a 25 minute pomodoro"
+                >
+                  Micro-tasks
+                </button>
+                <button
+                  class="chip"
+                  data-prompt="Give me 5 ways to reduce distractions while I focus"
+                >
+                  Reduce Distractions
+                </button>
+              </div>
+
+              <div class="ai-actions">
+                <button id="aiTipBtn" class="btn primary">Get AI Tip</button>
+                <button id="summarizeBtn" class="btn ghost">
+                  Summarize Session
+                </button>
+                <button id="clearLogBtn" class="btn">Clear</button>
+              </div>
+
+              <div class="log" id="aiLog" aria-live="polite"></div>
+
+              <footer class="footer-note">
+                <div class="muted small-note">
+                  AI calls use OpenRouter (model:
+                  <code>xiaomi/mimo-v2-flash:free</code>).
+                </div>
+                <div class="muted small-note">Responses shown below.</div>
+              </footer>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script src="timer.js" defer></script>
+  </body>
+</html>
