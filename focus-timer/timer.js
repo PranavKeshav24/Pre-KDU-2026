@@ -254,7 +254,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission().catch(() => {});
+    Notification.requestPermission().catch((err) => {
+      console.error("Notification permission request failed:", err);
+    });
   }
 
   updateDisplay();

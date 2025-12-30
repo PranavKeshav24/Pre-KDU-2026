@@ -232,7 +232,7 @@ body.dark .btn.ghost {
 .count {
   font-size: 28px;
   font-weight: 900;
-  color: #ffd6d6;
+  color: var(--count-color);
   margin-top: 6px;
 }
 
