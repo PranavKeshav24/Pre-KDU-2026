@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Star, X, CheckCircle, Circle, Trash } from "lucide-react";
 import type { Movie, Rating as RatingType } from "../lib/types";
@@ -63,7 +63,14 @@ export function MovieItem({
   const [notes, setNotes] = useState(movie.notes || "");
   const [rating, setRating] = useState<RatingType | undefined>(movie.rating);
   const [hovered, setHovered] = useState(false);
+  const [counter, setCounter] = useState(60);
 
+  function timer () {
+    useEffect(() => {
+        counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+      }, [counter]);
+    
+  }
   const handleOpen = () => {
     setNotes(movie.notes || "");
     setRating(movie.rating);
@@ -81,7 +88,16 @@ export function MovieItem({
 
   const posterUrl = omdb.getImageUrl(movie.posterPath || "");
   const releaseYear = movie.releaseDate ? movie.releaseDate : null;
+  const [timeLeft, setTimeLeft] = useState(10);
+  const [isRunning, setIsRunning] = useState(false)
 
+  const startCountdown = () => {
+    setHovered(true);
+    if (timeLeft === 0) {
+      // Redirect to a premium content page
+      window.location.href = "/premium-content-1";
+    }
+  };
   return (
     <>
       <motion.div
@@ -130,6 +146,13 @@ export function MovieItem({
               )}
               {movie.isWatched ? "Watched" : "Mark Watched"}
             </button>
+
+            {/* Add countdown when hovered on a premium title */}
+            {movie.isPremium && (
+              <button className="absolute px-2 py-1 top-2 left-2 z-10 flex items-center justify-center rounded-full bg-yellow-800 shadow-md" onClick={}>
+                Start countdown
+              </button>
+            )}
           </div>
 
           {movie.isWatched && (
@@ -137,6 +160,7 @@ export function MovieItem({
               <CheckCircle className="w-4 h-4 text-white" />
             </div>
           )}
+
         </div>
 
         <div className="flex flex-1 flex-col gap-1 p-3">
@@ -177,7 +201,7 @@ export function MovieItem({
           </div>
         </div>
       </motion.div>
-
+      
       <AnimatePresence>
         {open && (
           <div

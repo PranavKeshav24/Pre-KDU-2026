@@ -4,6 +4,10 @@ import type { Movie, FilterType } from "../lib/types";
 const STORAGE_KEY = "movie-track-watchlist";
 
 export function useMovieWatchlist() {
+  const premiumTitle1: Movie = {id: "premium-1", name: "Inception", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5};
+  const premiumTitle2: Movie = {id: "premium-2", name: "The Dark Knight", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5}; 
+  const premiumTitle3: Movie = {id: "premium-3", name: "Interstellar", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5};
+
   const [movies, setMovies] = useState<Movie[]>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -13,6 +17,10 @@ export function useMovieWatchlist() {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
+
+  const initializePremiumTitles = () => {
+    movies.push(premiumTitle1, premiumTitle2, premiumTitle3);
+  }
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(movies));
@@ -66,7 +74,8 @@ export function useMovieWatchlist() {
         const matchesFilter =
           filter === "all" ||
           (filter === "watched" && movie.isWatched) ||
-          (filter === "watchlist" && !movie.isWatched);
+          (filter === "watchlist" && !movie.isWatched) || 
+          (filter === "premium" && movie.isPremium);
 
         return matchesSearch && matchesFilter;
       })
@@ -93,5 +102,6 @@ export function useMovieWatchlist() {
     removeMovie,
     clearAll,
     stats,
+    initializePremiumTitles
   };
 }

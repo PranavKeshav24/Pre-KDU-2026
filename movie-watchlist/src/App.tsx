@@ -4,6 +4,7 @@ import { MovieForm } from "../components/movie-form";
 import { MovieItem } from "../components/movie-item";
 import { useColorMode } from "../components/theme-registry";
 import { MovieListEmpty } from "../components/movie-list-empty";
+import type { Movie } from "../lib/types";
 
 export default function WatchlistPage() {
   const {
@@ -18,9 +19,14 @@ export default function WatchlistPage() {
     removeMovie,
     clearAll,
     stats,
+    initializePremiumTitles
   } = useMovieWatchlist();
   const { toggleColorMode, mode } = useColorMode();
-
+  
+  // movies.push({id: "premium-1", name: "Inception", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5});
+  // movies.push({id: "premium-2", name: "The Dark Knight", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5});
+ 
+  
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:py-12">
       <div className="mb-8 flex flex-col items-end justify-between gap-4 md:flex-row">
@@ -69,8 +75,15 @@ export default function WatchlistPage() {
 
       <div className="flex flex-col gap-6">
         <div className="rounded-2xl bg-white/50 p-6 shadow-sm border border-gray-100 dark:bg-white/5 dark:border-gray-800">
-          <div className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          <div className="flex flex-row justify-between mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <div>
             ADD NEW FEATURE
+            </div>
+            <div>
+              <button className="h-[36px] min-w-full md:min-w-[100px] rounded-xl bg-blue-600 px-6 text-base font-bold text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-600/30 active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span onClick={initializePremiumTitles}>Initialize Premium Titles</span>
+              </button>
+            </div>
           </div>
           <MovieForm onAdd={addMovie} />
         </div>
@@ -95,6 +108,7 @@ export default function WatchlistPage() {
                 { label: "ALL", value: "all" },
                 { label: "PENDING", value: "watchlist" },
                 { label: "WATCHED", value: "watched" },
+                { label: "PREMIUM TITLES", value: "premium" },
               ].map((tab) => (
                 <button
                   key={tab.value}

@@ -10,8 +10,9 @@ export interface Movie {
   notes?: string;
   imdbId?: string;
   imdbRating?: string;
+  isPremium?: boolean;
   posterPath?: string | null;
   releaseDate?: string;
 }
 
-export type FilterType = "all" | "watched" | "watchlist";
+export type FilterType = "all" | "watched" | "watchlist" | "premium";
