@@ -8,6 +8,7 @@ import com.bookinventory.bookinventory.dto.BookResponse;
 public interface BookService {
     BookResponse addBook(BookRequest request);
     BookResponse getBookById(Long bookId);
+    List<BookResponse> getBookByAuthor(String author);
     List<BookResponse> getAllBooks();
     BookResponse updateBook(Long bookId, BookRequest request);
     void deleteBook(Long bookId);

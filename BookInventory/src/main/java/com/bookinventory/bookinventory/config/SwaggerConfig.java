@@ -13,7 +13,7 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
-
+    // Access
     @Bean
     public OpenAPI bookInventoryOpenAPI() {
         return new OpenAPI()

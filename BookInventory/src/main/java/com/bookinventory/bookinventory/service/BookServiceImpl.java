@@ -1,6 +1,7 @@
 package com.bookinventory.bookinventory.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -44,6 +45,20 @@ public class BookServiceImpl implements BookService {
     public BookResponse getBookById(Long id) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book not found"));
         return toResponse(book);
+    }
+
+    @Override
+    public List<BookResponse> getBookByAuthor(String author) {
+        List<BookResponse> books = bookRepository.findAll().stream()
+                .map(this::toResponse)
+                .filter(bookResponse -> Objects.equals(bookResponse.getAuthor(), author))
+                .toList();
+
+        if(books.isEmpty()) {
+            throw new ResourceNotFoundException("Book not found by author " + author);
+        }
+
+        return books;
     }
 
     @Override

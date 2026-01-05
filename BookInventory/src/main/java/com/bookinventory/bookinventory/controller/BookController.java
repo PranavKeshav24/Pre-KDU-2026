@@ -4,14 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bookinventory.bookinventory.dto.BookRequest;
 import com.bookinventory.bookinventory.dto.BookResponse;
@@ -53,6 +46,18 @@ public class BookController {
             @Parameter(description = "ID of the book to retrieve") @PathVariable Long id) {
         BookResponse resp = service.getBookById(id);
         return ResponseEntity.ok(resp);
+    }
+
+    @Operation(summary = "Get a book by Author", description = "Returns a list of books by its author")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Book found"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
+    })
+    @GetMapping("/author/{author}")
+    public ResponseEntity<List<BookResponse>> getBookByAuthorName(
+            @Parameter(description = "Author of the book to retrieve") @PathVariable String author) {
+        List<BookResponse> books = service.getBookByAuthor(author);
+        return ResponseEntity.ok(books);
     }
 
     @Operation(summary = "Get all books", description = "Returns a list of all books in the inventory")
