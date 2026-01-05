@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, time } from "framer-motion";
 import { Trash2, Star, X, CheckCircle, Circle, Trash } from "lucide-react";
 import type { Movie, Rating as RatingType } from "../lib/types";
 import { omdb } from "../lib/tmdb";
@@ -69,8 +69,8 @@ export function MovieItem({
     useEffect(() => {
         counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
       }, [counter]);
-    
   }
+
   const handleOpen = () => {
     setNotes(movie.notes || "");
     setRating(movie.rating);
@@ -94,8 +94,10 @@ export function MovieItem({
   const startCountdown = () => {
     setHovered(true);
     if (timeLeft === 0) {
-      // Redirect to a premium content page
-      window.location.href = "/premium-content-1";
+      handleOpen();
+      setTimeLeft(10);
+      setIsRunning(false);
+      return;
     }
   };
   return (
@@ -147,12 +149,30 @@ export function MovieItem({
               {movie.isWatched ? "Watched" : "Mark Watched"}
             </button>
 
-            {/* Add countdown when hovered on a premium title */}
             {movie.isPremium && (
-              <button className="absolute px-2 py-1 top-2 left-2 z-10 flex items-center justify-center rounded-full bg-yellow-800 shadow-md" onClick={}>
+              <button className="absolute w-fit px-2 py-1 top-2 left-2 z-10 flex items-center justify-center rounded-full bg-yellow-800 shadow-md" onClick={(e) => {e.stopPropagation(); startCountdown(); timer(); setIsRunning(true);}}>
                 Start countdown
+
+                {isRunning && (
+                  <span className="ml-1 z-50 text-sm font-mono">
+                    {counter}s
+                  </span>
+                )}
+                
+                {!isRunning && (
+                  <span className="ml-1 z-50 text-sm font-mono">
+                    10s
+                  </span>
+                )}
+
+                {isRunning && counter === 0 && (
+                  <span className="ml-1 z-50 text-sm font-mono">
+                    Time's up!
+                  </span>
+                )}
               </button>
             )}
+
           </div>
 
           {movie.isWatched && (
