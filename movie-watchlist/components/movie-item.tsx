@@ -103,7 +103,7 @@ export function MovieItem({
       }
       setButtonText(finalButtonText);
       setIsRunning(false);
-      setTimeLeft(-1); // Reset time for the next potential run
+      setTimeLeft(-1);
     }
   }, [timeLeft, isRunning]);
 
