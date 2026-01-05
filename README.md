@@ -160,3 +160,6 @@ SELECT UW.user_id, C.title AS content_title, CA.category_name FROM user_watchlis
 CREATE INDEX idx_year ON content(release_year);
 
 EXPLAIN ANALYZE SELECT content_id, title, rating FROM CONTENT WHERE release_year=2024;
+
+## Assessment on 5-01-2026:
+SELECT CO.title, CA.category_name FROM CONTENT CO INNER JOIN CATEGORY CA ON CA.category_id=CO.category_id WHERE category_name='Documentaries' AND CO.rating>8.0 GROUP BY CO.title;
