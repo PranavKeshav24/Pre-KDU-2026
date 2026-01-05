@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, time } from "framer-motion";
 import { Trash2, Star, X, CheckCircle, Circle, Trash } from "lucide-react";
 import type { Movie, Rating as RatingType } from "../lib/types";
@@ -63,13 +63,49 @@ export function MovieItem({
   const [notes, setNotes] = useState(movie.notes || "");
   const [rating, setRating] = useState<RatingType | undefined>(movie.rating);
   const [hovered, setHovered] = useState(false);
-  const [counter, setCounter] = useState(60);
+  const initialTime = 10;
+  const initialButtonText = 'Start Countdown';
+  const finalButtonText = 'Watch Now';
 
-  function timer () {
-    useEffect(() => {
-        counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-      }, [counter]);
-  }
+  const [timeLeft, setTimeLeft] = useState<number>(initialTime);
+  const [buttonText, setButtonText] = useState<string>(initialButtonText);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startCountdown = () => {
+    if (!isRunning) {
+      setIsRunning(true);
+      setButtonText(initialTime.toString()); // Change button text to initial time
+    }
+  };
+
+  useEffect(() => {
+    if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft(prevTime => prevTime - 1);
+      }, 1000);
+
+      // Cleanup function to clear interval on component unmount or re-render
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+      };
+    }
+  }, [isRunning]);
+
+  useEffect(() => {
+    if (timeLeft > 0 && isRunning) {
+      setButtonText(timeLeft.toString());
+    } else if (timeLeft === 0 && isRunning) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      setButtonText(finalButtonText);
+      setIsRunning(false);
+      setTimeLeft(-1); // Reset time for the next potential run
+    }
+  }, [timeLeft, isRunning]);
 
   const handleOpen = () => {
     setNotes(movie.notes || "");
@@ -88,18 +124,7 @@ export function MovieItem({
 
   const posterUrl = omdb.getImageUrl(movie.posterPath || "");
   const releaseYear = movie.releaseDate ? movie.releaseDate : null;
-  const [timeLeft, setTimeLeft] = useState(10);
-  const [isRunning, setIsRunning] = useState(false)
-
-  const startCountdown = () => {
-    setHovered(true);
-    if (timeLeft === 0) {
-      handleOpen();
-      setTimeLeft(10);
-      setIsRunning(false);
-      return;
-    }
-  };
+  
   return (
     <>
       <motion.div
@@ -150,29 +175,18 @@ export function MovieItem({
             </button>
 
             {movie.isPremium && (
-              <button className="absolute w-fit px-2 py-1 top-2 left-2 z-10 flex items-center justify-center rounded-full bg-yellow-800 shadow-md" onClick={(e) => {e.stopPropagation(); startCountdown(); timer(); setIsRunning(true);}}>
-                Start countdown
-
-                {isRunning && (
-                  <span className="ml-1 z-50 text-sm font-mono">
-                    {counter}s
+              <button className="absolute w-fit px-2 py-1 top-2 left-2 z-10 flex items-center justify-center rounded-full bg-yellow-800 shadow-md" onClick={(e) => {e.stopPropagation(); (timeLeft===10 && startCountdown()); (timeLeft===-1 && window.open(`https://www.imdb.com/title/${movie.imdbId}`, '_blank')) ; setIsRunning(true);}}>
+                {timeLeft == 0 ? (
+                  <span className="ml-1 z-50 text-sm font-mono" onClick={(e) => {e.stopPropagation(); window.open(`https://www.imdb.com/title/${movie.imdbId}`, '_blank');}}>
+                    {finalButtonText}
                   </span>
-                )}
-                
-                {!isRunning && (
+                ) : (
                   <span className="ml-1 z-50 text-sm font-mono">
-                    10s
-                  </span>
-                )}
-
-                {isRunning && counter === 0 && (
-                  <span className="ml-1 z-50 text-sm font-mono">
-                    Time's up!
-                  </span>
-                )}
+                    {buttonText}
+                  </span>                  
+                )}                
               </button>
             )}
-
           </div>
 
           {movie.isWatched && (
@@ -180,7 +194,6 @@ export function MovieItem({
               <CheckCircle className="w-4 h-4 text-white" />
             </div>
           )}
-
         </div>
 
         <div className="flex flex-1 flex-col gap-1 p-3">
