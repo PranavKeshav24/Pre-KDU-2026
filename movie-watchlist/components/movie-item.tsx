@@ -176,7 +176,7 @@ export function MovieItem({
             {movie.isPremium && (
               <button className="absolute w-fit px-2 py-1 top-2 left-2 z-10 flex items-center justify-center rounded-full bg-yellow-800 shadow-md" onClick={(e) => {e.stopPropagation(); (timeLeft===10 && startCountdown()); (timeLeft===-1 && window.open(`https://www.imdb.com/title/${movie.imdbId}`, '_blank')) ; setIsRunning(true);}}>
                 {timeLeft == 0 ? (
-                  <span className="ml-1 z-50 text-sm font-mono" onClick={(e) => {e.stopPropagation(); window.open(`https://www.imdb.com/title/${movie.imdbId}`, '_blank');}}>
+                  <span className="ml-1 z-50 text-sm font-mono" onClick={(e) => {e.stopPropagation(); window.open(`https://www.localhost:5173/${movie.imdbId}`, '_blank');}}>
                     {finalButtonText}
                   </span>
                 ) : (

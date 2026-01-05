@@ -4,9 +4,9 @@ import type { Movie, FilterType } from "../lib/types";
 const STORAGE_KEY = "movie-track-watchlist";
 
 export function useMovieWatchlist() {
-  const premiumTitle1: Movie = {id: "premium-1", name: "Inception", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5};
-  const premiumTitle2: Movie = {id: "premium-2", name: "The Dark Knight", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5}; 
-  const premiumTitle3: Movie = {id: "premium-3", name: "Interstellar", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5};
+  const premiumTitle1: Movie = {id: "premium-1", name: "Inception", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5, imdbId: "tt1375666"};
+  const premiumTitle2: Movie = {id: "premium-2", name: "The Dark Knight", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5, imdbId: "tt0468569"}; 
+  const premiumTitle3: Movie = {id: "premium-3", name: "Interstellar", isWatched: false, isPremium: true, createdAt: Date.now(), rating: 5, imdbId: "tt0816692"};
 
   const [movies, setMovies] = useState<Movie[]>(() => {
     if (typeof window !== "undefined") {
