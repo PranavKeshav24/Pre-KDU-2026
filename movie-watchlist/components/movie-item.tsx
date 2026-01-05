@@ -75,7 +75,7 @@ export function MovieItem({
   const startCountdown = () => {
     if (!isRunning) {
       setIsRunning(true);
-      setButtonText(initialTime.toString()); // Change button text to initial time
+      setButtonText(initialTime.toString());
     }
   };
 
@@ -85,7 +85,6 @@ export function MovieItem({
         setTimeLeft(prevTime => prevTime - 1);
       }, 1000);
 
-      // Cleanup function to clear interval on component unmount or re-render
       return () => {
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
